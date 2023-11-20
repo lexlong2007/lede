@@ -9,14 +9,14 @@
 
 name: OpenWrt-CI
 
-on:
-  push:
-    branches: 
+于:
+  推送:
+    分支: 
       - master
   # schedule:
   #   - cron: 0 20 * * *
-  release:
-    types: [published]
+  发行版:
+    types: [发布]
 
 jobs:
 
@@ -32,7 +32,7 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
-        with:
+        包含:
           ref: master
 
       - name: Space cleanup
@@ -73,7 +73,15 @@ jobs:
           # 例如:
 
           cat >> .config <<EOF
+          CONFIG_TARGET_x86=y
+          CONFIG_TARGET_x86_64=y
+          CONFIG_TARGET_x86_64_Generic=y
           CONFIG_TARGET_IMAGES_GZIP=y
+          CONFIG_EFI_IMAGES=y
+          CONFIG_PACKAGE_dnsmasq_full_dhcpv6=y
+          CONFIG_PACKAGE_ipv6helper=y
+          CONFIG_PACKAGE_luci-theme-argon=y
+          CONFIG_PACKAGE_luci-theme-netgear=y
           CONFIG_KERNEL_BUILD_USER="OpenWrt-CI"
           CONFIG_KERNEL_BUILD_DOMAIN="Azure"
           EOF
@@ -114,27 +122,27 @@ jobs:
 
       - name: Deliver buildinfo
         uses: actions/upload-artifact@v2
-        with:
+        包含:
           name: OpenWrt_buildinfo
           path: ./artifact/buildinfo/
 
       - name: Deliver package
         uses: actions/upload-artifact@v2
-        with:
+        包含:
           name: OpenWrt_package
           path: ./artifact/package/
 
       - name: Deliver firmware
         uses: actions/upload-artifact@v2
-        with:
+        包含:
           name: OpenWrt_firmware
           path: ./bin/targets/
 
       - name: Upload release asset
         if: github.event == 'release'
         uses: svenstaro/upload-release-action@v2
-        with:
+        包含:
           repo_token: ${{ secrets.YOURTOKEN }}
           file: ./artifact/firmware/*
-          tag: ${{ github.ref }}
+          标签: ${{ github.ref }}
           file_glob: true
